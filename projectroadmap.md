@@ -2,19 +2,20 @@
 
 **Phase 1: Core Drawing Functionality**
 
-* [ ] Test out the github repository I found and see if it fits my use case
-* [ ] Set up basic window and canvas using a suitable Python GUI library (e.g., Tkinter, PyQt, Pygame)
-* [ ] Implement freehand drawing with a basic brush tool
-* [ ] Allow changing brush color
+* [X] Test out the github repository I found and see if it fits my use case
+      - Tested out a similiar github repo and it is a good starting point for what I wnat to do
+* [X] Set up basic window and canvas using a suitable Python GUI library (e.g., Tkinter, PyQt, Pygame)
+* [X] Implement freehand drawing with a basic brush tool
+* [X] Allow changing brush color
 * [ ] Implement basic shape drawing (lines, rectangles, ovals)
-* [ ] Implement color palette selection
-* [ ] Implement a clear canvas function
-* [ ] Basic saving functionality (saving the canvas as an image file - e.g., PNG)
-* [ ] Basic opening functionality (loading an image file onto the canvas)
+* [X] Implement color palette selection
+* [X] Implement a clear canvas function
+* [X] Basic saving functionality (saving the canvas as an image file - e.g., PNG)
+* [X] Basic opening functionality (loading an image file onto the canvas)
 
 **Phase 2: Essential Tools and Features**
 
-* [ ] Implement an eraser tool
+* [X] Implement an eraser tool
 * [ ] Implement a fill tool (flood fill)
 * [ ] Implement a selection tool (rectangular selection)
 * [ ] Implement copy and paste functionality for selections
@@ -51,10 +52,4 @@
 * [ ] Animation capabilities
 * [ ] Integration with external libraries
 
-**Notes:**
 
-* This is a suggested roadmap and can be adjusted based on your priorities and progress.
-* Feel free to break down larger tasks into smaller, more manageable sub-tasks.
-* Regularly review and update this roadmap as the project evolves.
-* Use GitHub Issues to track specific bugs and feature requests.
-* Consider using GitHub Projects or Milestones to organize your work within these phases.
