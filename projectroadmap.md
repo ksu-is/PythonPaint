@@ -2,6 +2,7 @@
 
 **Phase 1: Core Drawing Functionality**
 
+* [ ] Test out the github repository I found and see if it fits my use case
 * [ ] Set up basic window and canvas using a suitable Python GUI library (e.g., Tkinter, PyQt, Pygame)
 * [ ] Implement freehand drawing with a basic brush tool
 * [ ] Allow changing brush color
