@@ -28,6 +28,8 @@ class DrawingApp:
         self.history = []  # Stack for undo
         self.redo_history = []  # Stack for redo
 
+        self.brush_size = 3  # Default brush size
+
         self.create_toolbar()
 
         self.canvas.bind("<Button-1>", self.on_click)
@@ -76,6 +78,14 @@ class DrawingApp:
 
         redo_button = tk.Button(toolbar, text="Redo", command=self.redo)
         redo_button.pack(side=tk.LEFT)
+
+        # Brush size slider
+        brush_label = tk.Label(toolbar, text="Brush Size:")
+        brush_label.pack(side=tk.LEFT)
+
+        self.brush_size_slider = tk.Scale(toolbar, from_=1, to_=20, orient=tk.HORIZONTAL, command=self.change_brush_size)
+        self.brush_size_slider.set(self.brush_size)  # Set initial brush size
+        self.brush_size_slider.pack(side=tk.LEFT)
 
     def choose_color(self):
         color = colorchooser.askcolor()[1]
@@ -150,8 +160,8 @@ class DrawingApp:
         x, y = event.x, event.y
 
         if self.current_tool == "pen" and self.drawing:
-            self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=3)
-            self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
+            self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=self.brush_size)
+            self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=self.brush_size)
             self.last_x, self.last_y = x, y
 
         elif self.current_tool == "eraser" and self.drawing:
@@ -160,22 +170,22 @@ class DrawingApp:
         elif self.current_tool == "line":
             if self.temp_line:
                 self.canvas.delete(self.temp_line)
-            self.temp_line = self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
+            self.temp_line = self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=self.brush_size)
         elif self.current_tool == "rectangle":
             if self.temp_rect:
                 self.canvas.delete(self.temp_rect)
-            self.temp_rect = self.canvas.create_rectangle(self.last_x, self.last_y, x, y, outline=self.current_color, width=3)
+            self.temp_rect = self.canvas.create_rectangle(self.last_x, self.last_y, x, y, outline=self.current_color, width=self.brush_size)
         elif self.current_tool == "oval":
             if self.temp_oval:
                 self.canvas.delete(self.temp_oval)
-            self.temp_oval = self.canvas.create_oval(self.last_x, self.last_y, x, y, outline=self.current_color, width=3)
+            self.temp_oval = self.canvas.create_oval(self.last_x, self.last_y, x, y, outline=self.current_color, width=self.brush_size)
 
     def on_release(self, event):
         x, y = event.x, event.y
 
         if self.current_tool == "pen" and self.drawing:
-            self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=3)
-            self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
+            self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=self.brush_size)
+            self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=self.brush_size)
             self.drawing = False
             self.save_state()
 
@@ -185,24 +195,24 @@ class DrawingApp:
             self.save_state()
 
         elif self.current_tool == "line":
-            self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
-            self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=3)
+            self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=self.brush_size)
+            self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=self.brush_size)
             self.temp_line = None
             self.save_state()
         elif self.current_tool == "rectangle":
-            self.canvas.create_rectangle(self.last_x, self.last_y, x, y, outline=self.current_color, width=3)
-            self.draw.rectangle([self.last_x, self.last_y, x, y], outline=self.current_color, width=3)
+            self.canvas.create_rectangle(self.last_x, self.last_y, x, y, outline=self.current_color, width=self.brush_size)
+            self.draw.rectangle([self.last_x, self.last_y, x, y], outline=self.current_color, width=self.brush_size)
             self.temp_rect = None
             self.save_state()
         elif self.current_tool == "oval":
-            self.canvas.create_oval(self.last_x, self.last_y, x, y, outline=self.current_color, width=3)
-            self.draw.ellipse([self.last_x, self.last_y, x, y], outline=self.current_color, width=3)
+            self.canvas.create_oval(self.last_x, self.last_y, x, y, outline=self.current_color, width=self.brush_size)
+            self.draw.ellipse([self.last_x, self.last_y, x, y], outline=self.current_color, width=self.brush_size)
             self.temp_oval = None
             self.save_state()
 
     def erase(self, x, y):
-        self.draw.line([x - 5, y - 5, x + 5, y + 5], fill="white", width=10)
-        self.canvas.create_line(x - 5, y - 5, x + 5, y + 5, fill="white", width=10)
+        self.draw.line([x - self.brush_size, y - self.brush_size, x + self.brush_size, y + self.brush_size], fill="white", width=self.brush_size * 2)
+        self.canvas.create_line(x - self.brush_size, y - self.brush_size, x + self.brush_size, y + self.brush_size, fill="white", width=self.brush_size * 2)
 
     def save_state(self):
         """Save the current image state to history for undo."""
@@ -233,6 +243,11 @@ class DrawingApp:
     def get_image_for_canvas(self):
         """Convert the image to a format that can be displayed on canvas."""
         return ImageTk.PhotoImage(self.image)
+
+    def change_brush_size(self, value):
+        """Change brush size based on the slider value."""
+        self.brush_size = int(value)
+
 
 def main():
     root = tk.Tk()
