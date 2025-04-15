@@ -12,7 +12,7 @@
 * [X] Implement a clear canvas function
 * [X] Basic saving functionality (saving the canvas as an image file - e.g., PNG)
 * [X] Basic opening functionality (loading an image file onto the canvas)
-* [ ] The pen tool is not working and make a filled in shape
+* [X] The pen tool is not working and make a filled in shape
 
 **Phase 2: Essential Tools and Features**
 
