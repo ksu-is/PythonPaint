@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import colorchooser
 from PIL import Image, ImageTk, ImageDraw
 
-
 class DrawingApp:
     def __init__(self, root):
         self.root = root
@@ -52,6 +51,12 @@ class DrawingApp:
         oval_button = tk.Button(toolbar, text="Oval", command=self.set_oval_tool)
         oval_button.pack(side=tk.LEFT)
 
+        eraser_button = tk.Button(toolbar, text="Eraser", command=self.set_eraser_tool)
+        eraser_button.pack(side=tk.LEFT)
+
+        fill_button = tk.Button(toolbar, text="Fill", command=self.fill_tool)
+        fill_button.pack(side=tk.LEFT)
+
         clear_button = tk.Button(toolbar, text="Clear", command=self.clear_canvas)
         clear_button.pack(side=tk.LEFT)
 
@@ -78,6 +83,13 @@ class DrawingApp:
     def set_oval_tool(self):
         self.current_tool = "oval"
 
+    def set_eraser_tool(self):
+        self.current_tool = "eraser"
+
+    def fill_tool(self):
+        self.current_tool = "fill"
+        self.flood_fill(self.last_x, self.last_y, self.current_color)
+
     def clear_canvas(self):
         self.canvas.delete("all")
         self.image = Image.new("RGB", (self.canvas_width, self.canvas_height), "white")
@@ -89,10 +101,39 @@ class DrawingApp:
     def open_image(self):
         pass  # Implement open image functionality here (optional)
 
+    def flood_fill(self, x, y, color):
+        target_color = self.image.getpixel((x, y))
+        if target_color == color:
+            return
+        self._flood_fill(x, y, target_color, color)
+
+    def _flood_fill(self, x, y, target_color, color):
+        # Ensure that color is an RGB tuple
+        color_rgb = self.hex_to_rgb(color)
+
+        if x < 0 or x >= self.canvas_width or y < 0 or y >= self.canvas_height:
+            return
+        if self.image.getpixel((x, y)) != target_color:
+            return
+        self.image.putpixel((x, y), color_rgb)
+        self.canvas.create_rectangle(x, y, x + 1, y + 1, fill=color, outline=color)
+        self._flood_fill(x + 1, y, target_color, color)
+        self._flood_fill(x - 1, y, target_color, color)
+        self._flood_fill(x, y + 1, target_color, color)
+        self._flood_fill(x, y - 1, target_color, color)
+
+    def hex_to_rgb(self, hex_color):
+        """Convert hex color string to an RGB tuple."""
+        if hex_color[0] == '#':
+            hex_color = hex_color[1:]
+        return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
     def on_click(self, event):
         self.last_x, self.last_y = event.x, event.y
-        if self.current_tool == "pen":
+        if self.current_tool == "pen" or self.current_tool == "eraser":
             self.drawing = True
+        elif self.current_tool == "fill":
+            self.flood_fill(event.x, event.y, self.current_color)
 
     def on_drag(self, event):
         x, y = event.x, event.y
@@ -101,6 +142,9 @@ class DrawingApp:
             self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=3)
             self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
             self.last_x, self.last_y = x, y
+
+        elif self.current_tool == "eraser" and self.drawing:
+            self.erase(x, y)
 
         elif self.current_tool == "line":
             if self.temp_line:
@@ -123,6 +167,10 @@ class DrawingApp:
             self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
             self.drawing = False
 
+        elif self.current_tool == "eraser" and self.drawing:
+            self.erase(x, y)
+            self.drawing = False
+
         elif self.current_tool == "line":
             self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
             self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=3)
@@ -135,6 +183,10 @@ class DrawingApp:
             self.canvas.create_oval(self.last_x, self.last_y, x, y, outline=self.current_color, width=3)
             self.draw.ellipse([self.last_x, self.last_y, x, y], outline=self.current_color, width=3)
             self.temp_oval = None
+
+    def erase(self, x, y):
+        self.draw.line([x - 5, y - 5, x + 5, y + 5], fill="white", width=10)
+        self.canvas.create_line(x - 5, y - 5, x + 5, y + 5, fill="white", width=10)
 
 
 def main():
