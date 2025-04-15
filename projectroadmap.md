@@ -14,6 +14,7 @@
 * [X] Basic opening functionality (loading an image file onto the canvas)
 * [X] The pen tool is not working and make a filled in shape
 * [X] add brush resizing
+* [X] added comments to make code more understandable
 
 **Phase 2: Essential Tools and Features**
 
