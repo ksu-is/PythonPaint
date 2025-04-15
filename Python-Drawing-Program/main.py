@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import colorchooser
 from PIL import Image, ImageTk, ImageDraw
+import copy
 
 class DrawingApp:
     def __init__(self, root):
@@ -23,6 +24,9 @@ class DrawingApp:
         self.temp_rect = None
         self.temp_oval = None
         self.drawing = False
+
+        self.history = []  # Stack for undo
+        self.redo_history = []  # Stack for redo
 
         self.create_toolbar()
 
@@ -66,6 +70,13 @@ class DrawingApp:
         open_button = tk.Button(toolbar, text="Open", command=self.open_image)
         open_button.pack(side=tk.LEFT)
 
+        # Undo/Redo buttons
+        undo_button = tk.Button(toolbar, text="Undo", command=self.undo)
+        undo_button.pack(side=tk.LEFT)
+
+        redo_button = tk.Button(toolbar, text="Redo", command=self.redo)
+        redo_button.pack(side=tk.LEFT)
+
     def choose_color(self):
         color = colorchooser.askcolor()[1]
         if color:
@@ -94,6 +105,7 @@ class DrawingApp:
         self.canvas.delete("all")
         self.image = Image.new("RGB", (self.canvas_width, self.canvas_height), "white")
         self.draw = ImageDraw.Draw(self.image)
+        self.history.clear()  # Clear history after clearing canvas
 
     def save_image(self):
         self.image.save("drawing.png")
@@ -108,7 +120,6 @@ class DrawingApp:
         self._flood_fill(x, y, target_color, color)
 
     def _flood_fill(self, x, y, target_color, color):
-        # Ensure that color is an RGB tuple
         color_rgb = self.hex_to_rgb(color)
 
         if x < 0 or x >= self.canvas_width or y < 0 or y >= self.canvas_height:
@@ -166,28 +177,62 @@ class DrawingApp:
             self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=3)
             self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
             self.drawing = False
+            self.save_state()
 
         elif self.current_tool == "eraser" and self.drawing:
             self.erase(x, y)
             self.drawing = False
+            self.save_state()
 
         elif self.current_tool == "line":
             self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
             self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=3)
             self.temp_line = None
+            self.save_state()
         elif self.current_tool == "rectangle":
             self.canvas.create_rectangle(self.last_x, self.last_y, x, y, outline=self.current_color, width=3)
             self.draw.rectangle([self.last_x, self.last_y, x, y], outline=self.current_color, width=3)
             self.temp_rect = None
+            self.save_state()
         elif self.current_tool == "oval":
             self.canvas.create_oval(self.last_x, self.last_y, x, y, outline=self.current_color, width=3)
             self.draw.ellipse([self.last_x, self.last_y, x, y], outline=self.current_color, width=3)
             self.temp_oval = None
+            self.save_state()
 
     def erase(self, x, y):
         self.draw.line([x - 5, y - 5, x + 5, y + 5], fill="white", width=10)
         self.canvas.create_line(x - 5, y - 5, x + 5, y + 5, fill="white", width=10)
 
+    def save_state(self):
+        """Save the current image state to history for undo."""
+        self.history.append(copy.deepcopy(self.image))
+        self.redo_history.clear()  # Clear redo history after a new action
+
+    def undo(self):
+        """Undo the last action."""
+        if self.history:
+            self.redo_history.append(copy.deepcopy(self.image))
+            self.image = self.history.pop()
+            self.draw = ImageDraw.Draw(self.image)
+            self.update_canvas()
+
+    def redo(self):
+        """Redo the last undone action."""
+        if self.redo_history:
+            self.history.append(copy.deepcopy(self.image))
+            self.image = self.redo_history.pop()
+            self.draw = ImageDraw.Draw(self.image)
+            self.update_canvas()
+
+    def update_canvas(self):
+        """Redraw the canvas after undo/redo."""
+        self.canvas.delete("all")
+        self.canvas.create_image(0, 0, anchor="nw", image=self.get_image_for_canvas())
+
+    def get_image_for_canvas(self):
+        """Convert the image to a format that can be displayed on canvas."""
+        return ImageTk.PhotoImage(self.image)
 
 def main():
     root = tk.Tk()
