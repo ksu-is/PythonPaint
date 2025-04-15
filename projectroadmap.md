@@ -21,7 +21,7 @@
 * [ ] Implement copy and paste functionality for selections
 * [ ] Implement resizing of shapes after drawing (if feasible at this stage)
 * [ ] Implement undo/redo functionality (basic level)
-* [ ] Add a basic toolbar or menu for tool selection
+* [X] Add a basic toolbar or menu for tool selection
 * [ ] Display current brush color and size
 
 **Phase 3: Advanced Tools and Enhancements**
