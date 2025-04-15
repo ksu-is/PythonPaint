@@ -7,15 +7,16 @@
 * [X] Set up basic window and canvas using a suitable Python GUI library (e.g., Tkinter, PyQt, Pygame)
 * [X] Implement freehand drawing with a basic brush tool
 * [X] Allow changing brush color
-* [ ] Implement basic shape drawing (lines, rectangles, ovals)
+* [X] Implement basic shape drawing (lines, rectangles, ovals)
 * [X] Implement color palette selection
 * [X] Implement a clear canvas function
 * [X] Basic saving functionality (saving the canvas as an image file - e.g., PNG)
 * [X] Basic opening functionality (loading an image file onto the canvas)
+* [ ] The pen tool is not working and make a filled in shape
 
 **Phase 2: Essential Tools and Features**
 
-* [X] Implement an eraser tool
+* [ ] Implement an eraser tool
 * [ ] Implement a fill tool (flood fill)
 * [ ] Implement a selection tool (rectangular selection)
 * [ ] Implement copy and paste functionality for selections
