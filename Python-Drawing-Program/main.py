@@ -23,6 +23,7 @@ class DrawingApp:
         self.temp_line = None
         self.temp_rect = None
         self.temp_oval = None
+        self.drawing = False
 
         self.create_toolbar()
 
@@ -90,13 +91,17 @@ class DrawingApp:
 
     def on_click(self, event):
         self.last_x, self.last_y = event.x, event.y
+        if self.current_tool == "pen":
+            self.drawing = True
 
     def on_drag(self, event):
         x, y = event.x, event.y
 
-        if self.current_tool == "pen":
+        if self.current_tool == "pen" and self.drawing:
             self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=3)
             self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
+            self.last_x, self.last_y = x, y
+
         elif self.current_tool == "line":
             if self.temp_line:
                 self.canvas.delete(self.temp_line)
@@ -113,9 +118,11 @@ class DrawingApp:
     def on_release(self, event):
         x, y = event.x, event.y
 
-        if self.current_tool == "pen":
+        if self.current_tool == "pen" and self.drawing:
             self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=3)
             self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
+            self.drawing = False
+
         elif self.current_tool == "line":
             self.canvas.create_line(self.last_x, self.last_y, x, y, fill=self.current_color, width=3)
             self.draw.line([self.last_x, self.last_y, x, y], fill=self.current_color, width=3)
