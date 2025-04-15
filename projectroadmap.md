@@ -16,7 +16,7 @@
 
 **Phase 2: Essential Tools and Features**
 
-* [ ] Implement an eraser tool
+* [X] Implement an eraser tool
 * [ ] Implement a fill tool (flood fill)
 * [ ] Implement a selection tool (rectangular selection)
 * [ ] Implement copy and paste functionality for selections
