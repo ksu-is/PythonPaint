@@ -25,16 +25,17 @@
 * [ ] Implement resizing of shapes after drawing (if feasible at this stage)
 * [X] Implement undo/redo functionality (basic level)
 * [X] Add a basic toolbar or menu for tool selection
-* [ ] Display current brush color and size
+* [ ] Display current brush color 
+* [X] Display current brush size
 
 **Phase 3: Advanced Tools and Enhancements**
 
 * [ ] Implement different brush styles and sizes
-* [ ] Implement polygon drawing tool
+* [X] Implement polygon drawing tool
 * [ ] Implement text tool with font and size options
 * [ ] Implement image resizing and cropping
 * [ ] Implement rotation of selections/images
-* [ ] Enhance undo/redo functionality (multiple levels)
+* [X] Enhance undo/redo functionality (multiple levels)
 * [ ] Add more sophisticated color manipulation tools (e.g., eyedropper)
 * [ ] Explore different image file formats for saving/opening (e.g., JPEG, GIF)
 
